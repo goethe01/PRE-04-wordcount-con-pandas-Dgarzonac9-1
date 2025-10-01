@@ -8,19 +8,22 @@ import pandas as pd  # type: ignore
 def load_input(input_directory):
     """Load text files in 'input_directory/'"""
     files = glob.glob(f"{input_directory}/*")
-    dataframes = [
-        pd.read_csv(file, header=None, names=["line"], sep="\n", engine="python")
-        for file in files
-    ]
-    dataframe = pd.concat(dataframes, ignore_index=True)
-    return dataframe
+    lines = []
+    for file in files:
+        with open(file, encoding="utf-8") as f:
+            lines.extend(f.read().splitlines())
+    return pd.DataFrame(lines, columns=["line"])
 
 
 def clean_text(dataframe):
     """Text cleaning"""
     dataframe = dataframe.copy()
     dataframe["line"] = dataframe["line"].str.lower()
-    dataframe["line"] = dataframe["line"].str.replace(r"[^a-z\s]", "", regex=True)
+    dataframe["line"] = (
+        dataframe["line"]
+        .str.replace(",", "", regex=False)
+        .str.replace(".", "", regex=False)
+    )
     return dataframe
 
 
