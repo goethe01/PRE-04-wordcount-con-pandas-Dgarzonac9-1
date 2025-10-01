@@ -6,6 +6,7 @@
 #
 def run_job(input_directory, output_directory):
     """Job"""
+    """Job function"""
 
 
 if __name__ == "__main__":
